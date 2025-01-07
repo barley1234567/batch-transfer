@@ -79,7 +79,76 @@ function BatchTransfer() {
 
   // 组件渲染
   return (
-    // ... (添加之前的 return JSX 内容)
+    <Box maxW="600px" mx="auto" mt="8" p="6">
+      <VStack spacing="4">
+        <Text fontSize="2xl">批量转账</Text>
+        
+        <Button 
+          onClick={connectWallet} 
+          colorScheme="blue" 
+          w="full"
+        >
+          {account ? `已连接: ${account.slice(0, 6)}...${account.slice(-4)}` : '连接钱包'}
+        </Button>
+
+        <Input
+          placeholder="代币合约地址"
+          value={tokenAddress}
+          onChange={(e) => setTokenAddress(e.target.value)}
+        />
+
+        {tokenSymbol && (
+          <VStack w="full" spacing="2">
+            <Stat>
+              <StatLabel>代币余额</StatLabel>
+              <StatNumber>{`${tokenBalance} ${tokenSymbol}`}</StatNumber>
+            </Stat>
+            <Stat>
+              <StatLabel>总转账金额</StatLabel>
+              <StatNumber>{`${totalAmount} ${tokenSymbol}`}</StatNumber>
+            </Stat>
+          </VStack>
+        )}
+
+        <Textarea
+          placeholder="请输入转账地址和金额，每行一个，格式：地址,金额
+例如：
+0x1234...5678,1.5
+0x8765...4321,2.0"
+          value={addressList}
+          onChange={(e) => setAddressList(e.target.value)}
+          height="200px"
+          isInvalid={!!validationError}
+        />
+
+        {validationError && (
+          <Alert status="error" borderRadius="md">
+            <AlertIcon />
+            {validationError}
+          </Alert>
+        )}
+
+        {loading && (
+          <Box w="full">
+            <HStack justify="space-between" mb="2">
+              <Text>转账进度</Text>
+              <Text>{`${Math.round(progress)}%`}</Text>
+            </HStack>
+            <Progress value={progress} size="sm" colorScheme="green" />
+          </Box>
+        )}
+
+        <Button
+          onClick={batchTransfer}
+          colorScheme="green"
+          w="full"
+          isLoading={loading}
+          loadingText={`正在转账 (${Math.round(progress)}%)`}
+        >
+          执行批量转账
+        </Button>
+      </VStack>
+    </Box>
   );
 }
 
